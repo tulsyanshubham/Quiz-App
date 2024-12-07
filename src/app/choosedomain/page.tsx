@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { selectForm } from '@/assets/formData';
 import { useRouter } from 'next/navigation';
 import { useAtom } from 'jotai';
@@ -15,8 +15,12 @@ export default function Page() {
     const router = useRouter();
 
     const [siteTheme] = useAtom(themeAtom)
+
     useEffect(() => {
         setOptions(selectForm.map((data) => data.domain));
+    },[]);
+
+    useEffect(() => {
         if (siteTheme === 'dark')
             document.body.classList.add("dark");
         else
@@ -37,7 +41,7 @@ export default function Page() {
     }
 
     return (
-        <Frame>
+        <Frame className='justify-center'>
             <div className="text-4xl font-bold text-center pb-6">Select Your Quiz Domain</div>
             {options.length > 0 && (
                 <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center text-gray-800 dark:text-gray-100">

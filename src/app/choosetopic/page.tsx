@@ -48,7 +48,7 @@ export default function TopicForm() {
     };
 
     return (
-        <Frame>
+        <Frame className='justify-center'>
             <div className="text-4xl font-bold text-center pb-6">Choose Your Quiz Topics</div>
             {options.length > 0 && (
                 <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center text-gray-800 dark:text-gray-100">

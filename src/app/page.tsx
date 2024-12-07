@@ -26,7 +26,7 @@ export default function Home() {
 
 
   return (
-    <Frame>
+    <Frame className='justify-center'>
       <h1 className="text-6xl font-bold mb-8">Welcome to the Quiz App</h1>
       <p className="text-2xl mb-12">Test your knowledge with our fun and interactive quizzes!</p>
       <button

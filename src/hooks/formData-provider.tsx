@@ -6,10 +6,10 @@ interface FormData {
     number_of_questions: number;
 }
 
-const defaultTheme : FormData = {
+const defaultData : FormData = {
     domain: "",
     topics: [],
     number_of_questions: 5,
 };
 
-export const formDataAtom = atom(defaultTheme);
+export const formDataAtom = atom(defaultData);
