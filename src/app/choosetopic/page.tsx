@@ -49,13 +49,13 @@ export default function TopicForm() {
 
     return (
         <Frame className='justify-center'>
-            <div className="text-4xl font-bold text-center pb-6">Choose Your Quiz Topics</div>
+            <div className="text-4xl font-bold text-center pb-6">Choose Your Quiz Topics ({formData.domain})</div>
             {options.length > 0 && (
                 <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center text-gray-800 dark:text-gray-100">
                     <div className="w-4/5 flex flex-col items-center justify-center gap-4 py-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg">
                         <div className="flex flex-wrap items-center justify-center gap-5 py-3">
                             {options.map((option) => (
-                                <label key={option} className={`w-[28%] text-center text-2xl py-2 px-3 border-2 rounded-lg cursor-pointer transition duration-300 ${selectedOption.includes(option) ? "bg-blue-300 dark:bg-blue-700" : "bg-gray-200 dark:bg-gray-700"}`}>
+                                <label key={option} className={`w-[80%] md:w-[40%] xl:w-[28%] text-center text-2xl py-2 px-3 border-2 rounded-lg cursor-pointer transition duration-300 ${selectedOption.includes(option) ? "bg-blue-300 dark:bg-blue-700" : "bg-gray-200 dark:bg-gray-700"}`}>
                                     <input
                                         type="checkbox"
                                         value={option}
@@ -67,9 +67,18 @@ export default function TopicForm() {
                                 </label>
                             ))}
                         </div>
-                        <div className="text-2xl flex gap-7 items-center">
+                        <div className="text-2xl flex flex-wrap justify-center gap-7 items-center">
                             <label>Number of questions: {numberOfQuestions}</label>
-                            <input type="range" min={1} max={20} className="w-56" value={numberOfQuestions} onChange={(e) => { setNumberOfQuestions(parseInt(e.target.value)) }} />
+                            <input
+                                type="range"
+                                min={1}
+                                max={15}
+                                value={numberOfQuestions}
+                                onChange={(e) => {
+                                    setNumberOfQuestions(parseInt(e.target.value))
+                                }}
+                                className="w-56 h-2 bg-blue-300 rounded-lg appearance-none cursor-pointer accent-yellow-500"
+                            />
                         </div>
                         <button type="submit" className="text-xl px-8 py-3 bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 rounded-full shadow-lg transition duration-300">Next</button>
                     </div>

@@ -1,6 +1,6 @@
 // camera
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAtom } from "jotai";
@@ -54,14 +54,19 @@ export default function Camera() {
     }, [siteTheme]);
 
     useEffect(() => {
+        if (formData.domain === "" || formData.topics.length === 0) {
+            router.push("/choosedomain");
+        }
         async function fetchQuestions() {
-            setQuestions([
-                "What are the different ways to style HTML elements using CSS, and what are the advantages and disadvantages of each method?",
-                "Explain the difference between `==` and `===` in JavaScript",
-                "Describe the box model in CSS and how it affects element layout",
-                "What are semantic HTML5 elements and why are they important?",
-                "Explain the concept of closures in JavaScript and provide a simple example",
-            ]);
+            const response = await axios.post("/api/get_questions", { ...formData });
+            setQuestions(response.data.questions);
+            // setQuestions([
+            //     "What are the different ways to style HTML elements using CSS, and what are the advantages and disadvantages of each method?",
+            //     "Explain the difference between `==` and `===` in JavaScript",
+            //     "Describe the box model in CSS and how it affects element layout",
+            //     "What are semantic HTML5 elements and why are they important?",
+            //     "Explain the concept of closures in JavaScript and provide a simple example",
+            // ]);
             setLoading(false);
         }
         fetchQuestions();
@@ -127,7 +132,14 @@ export default function Camera() {
 
     const stopRecording = () => {
         if (mediaRecorderRef.current && isRecording) {
+            // Stop the media recorder
             mediaRecorderRef.current.stop();
+
+            // Stop all audio tracks to turn off the microphone
+            const stream = mediaRecorderRef.current.stream;
+            stream.getTracks().forEach((track) => track.stop());
+
+            // Save the user's response
             const answer = interimTranscript.trim();
             const currentQuestion = questions[currentIndex];
 
@@ -136,6 +148,7 @@ export default function Camera() {
                 { question: currentQuestion, answer_by_user: answer || "No answer provided" },
             ]);
 
+            // Reset interim transcript and prepare for the next question
             setInterimTranscript("");
             setCurrentIndex((prevIndex) => prevIndex + 1);
             setQuestionText("");
@@ -166,7 +179,7 @@ export default function Camera() {
                         <p className="text-2xl text-center py-2 ">
                             <strong>Progress:</strong> {currentIndex}/{questions.length}
                         </p>
-                        <div className="w-full bg-gray-200 rounded-lg h-2 md:h-4 overflow-hidden">
+                        <div className="w-full bg-gray-200 rounded-lg h-1 md:h-3 overflow-hidden">
                             <div
                                 className="bg-green-500 h-full rounded-lg"
                                 style={{ width: `${(currentIndex / questions.length) * 100}%` }}
@@ -200,7 +213,7 @@ export default function Camera() {
                             <div className="text-gray-100 text-2xl transition-height duration-1000 min-h-20">
                                 <TypingAnimation
                                     className="text-4xl font-bold text-black dark:text-white"
-                                    text={"Quiz Completed!"}
+                                    text={"🎊Quiz Completed🎊"}
                                     duration={40}
                                 />
                             </div>
@@ -213,18 +226,41 @@ export default function Camera() {
                         </div>
                     )}
 
-                    {userResponses.length > 0 && <div className="mt-6 max-w-6xl">
-                        <h3 className="text-2xl text-center font-semibold mb-4">Responses</h3>
-                        <ul className=" pl-6 text-lg">
-                            {userResponses.map((response, index) => (
-                                <li key={index} className="mb-3">
-                                    <strong>Q{index + 1}:</strong> {response.question}
-                                    <br />
-                                    <strong>Your Answer:</strong> {response.answer_by_user}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>}
+                    {userResponses.length > 0 &&
+                        <div className="mt-6 max-w-5xl mx-auto px-4">
+                            <h3 className="text-3xl text-center font-semibold mb-6">Responses</h3>
+                            <div className="overflow-x-auto">
+                                <table className="w-full table-auto border-collapse border border-gray-300 rounded-xl overflow-hidden shadow-md">
+                                    <tbody>
+                                        {userResponses.map((response, index) => (
+                                            <Fragment key={index}>
+                                                {/* Question Row */}
+                                                <tr className="bg-gray-50/30">
+                                                    <td className="border border-gray-300 px-3 py-4 text-left align-top font-bold whitespace-nowrap">
+                                                        Q{index + 1}.
+                                                    </td>
+                                                    <td className="border border-gray-300 px-3 py-4 text-left align-top">
+                                                        {response.question}
+                                                    </td>
+                                                </tr>
+                                                {/* Answer Row */}
+                                                <tr className="bg-gray-200/10">
+                                                    <td className="border border-gray-300 px-3 py-4 text-left align-top font-bold whitespace-nowrap">
+                                                        Ans
+                                                    </td>
+                                                    <td className="border border-gray-300 px-3 py-4 text-left align-top">
+                                                        {response.answer_by_user}
+                                                    </td>
+                                                </tr>
+                                            </Fragment>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    }
                 </Frame>
             )}
         </div>

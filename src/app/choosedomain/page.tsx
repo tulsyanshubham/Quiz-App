@@ -18,7 +18,7 @@ export default function Page() {
 
     useEffect(() => {
         setOptions(selectForm.map((data) => data.domain));
-    },[]);
+    }, []);
 
     useEffect(() => {
         if (siteTheme === 'dark')
@@ -48,7 +48,7 @@ export default function Page() {
                     <div className="w-2/3 flex flex-col items-center justify-center gap-4 py-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg">
                         <div className="flex flex-wrap items-center justify-center gap-5 py-3">
                             {options.map((option) => (
-                                <label key={option} className={`w-[28%] text-center text-2xl py-2 px-3 border-2 rounded-lg cursor-pointer transition duration-300 ${selectedOption === option ? "bg-blue-300 dark:bg-blue-700" : "bg-gray-200 dark:bg-gray-700"}`}>
+                                <label key={option} className={`w-[80%] md:w-[40%] xl:w-[28%] text-center text-2xl py-2 px-3 border-2 rounded-lg cursor-pointer transition duration-300 ${selectedOption === option ? "bg-blue-300 dark:bg-blue-700" : "bg-gray-200 dark:bg-gray-700"}`}>
                                     <input
                                         type="radio"
                                         value={option}
