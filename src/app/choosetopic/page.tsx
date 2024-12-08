@@ -7,6 +7,7 @@ import { formDataAtom } from '@/hooks/formData-provider';
 import { themeAtom } from '@/hooks/theme-provider';
 import Header from '@/components/Header';
 import Frame from '@/components/Frame';
+import { useToast } from '@/hooks/use-toast';
 
 export default function TopicForm() {
     const [formData, setFormData] = useAtom(formDataAtom);
@@ -14,12 +15,16 @@ export default function TopicForm() {
     const [selectedOption, setSelectedOption] = useState<string[]>([]);
     const [numberOfQuestions, setNumberOfQuestions] = useState<number>(formData.number_of_questions);
     const router = useRouter();
+    const { toast } = useToast()
 
     useEffect(() => {
         if (formData.domain === "") {
-            router.push('/');
+            router.push('/choosedomain');
         }
         setOptions(selectForm.find((data) => data.domain === formData.domain)?.topics || []);
+        if(formData.topics.length > 0) {
+            setSelectedOption(formData.topics);
+        }
     }, [formData.domain]);
 
     const [siteTheme] = useAtom(themeAtom)
@@ -35,6 +40,13 @@ export default function TopicForm() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (selectedOption.length === 0) {
+            toast({
+                title: 'Error',
+                description: 'Please select at least one topic',
+            });
+            return;
+        }        
         setFormData({ domain: formData.domain, topics: selectedOption, number_of_questions: numberOfQuestions });
         router.push('/test');
     }
@@ -51,11 +63,11 @@ export default function TopicForm() {
         <Frame className='justify-center'>
             <div className="text-4xl font-bold text-center pb-6">Choose Your Quiz Topics ({formData.domain})</div>
             {options.length > 0 && (
-                <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center text-gray-800 dark:text-gray-100">
-                    <div className="w-4/5 flex flex-col items-center justify-center gap-4 py-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg">
+                <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center text-white dark:text-gray-100">
+                    <div className="w-4/5 flex flex-col items-center justify-center gap-4 py-6 bg-gray-800/30 dark:bg-gray-900/30 rounded-xl shadow-lg">
                         <div className="flex flex-wrap items-center justify-center gap-5 py-3">
                             {options.map((option) => (
-                                <label key={option} className={`w-[80%] md:w-[40%] xl:w-[28%] text-center text-2xl py-2 px-3 border-2 rounded-lg cursor-pointer transition duration-300 ${selectedOption.includes(option) ? "bg-blue-300 dark:bg-blue-700" : "bg-gray-200 dark:bg-gray-700"}`}>
+                                <label key={option} className={`w-[80%] md:w-[40%] xl:w-[28%] text-center text-2xl py-2 px-3 rounded-lg cursor-pointer transition duration-300 ${selectedOption.includes(option) ? "bg-green-500/60 dark:bg-green-500/50" : "bg-gray-900/30 dark:bg-gray-700"}`}>
                                     <input
                                         type="checkbox"
                                         value={option}
@@ -80,7 +92,11 @@ export default function TopicForm() {
                                 className="w-56 h-2 bg-blue-300 rounded-lg appearance-none cursor-pointer accent-yellow-500"
                             />
                         </div>
-                        <button type="submit" className="text-xl px-8 py-3 bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 rounded-full shadow-lg transition duration-300">Next</button>
+                        <button
+                            type="submit"
+                            className="text-xl px-8 py-3 bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 rounded-full shadow-lg transition duration-300">
+                            Next
+                        </button>
                     </div>
                 </form>
             )}

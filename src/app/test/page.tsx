@@ -8,8 +8,11 @@ import { formDataAtom } from "@/hooks/formData-provider";
 import Frame from "@/components/Frame";
 import Lottie from "lottie-react";
 import loader from "@/assets/white loader.json";
+import smallLoader from "@/assets/loader.gif";
 import { TypingAnimation } from "@/components/ui/type-animation";
 import { themeAtom } from "@/hooks/theme-provider";
+import { resultDataAtom } from "@/hooks/result-provider";
+import Image from "next/image";
 
 // Declare custom types for SpeechRecognition
 declare global {
@@ -43,6 +46,9 @@ export default function Camera() {
     const [formData] = useAtom(formDataAtom);
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
+    const [fetchedResult, setFetchedResult] = useAtom(resultDataAtom);
+    const [isGeneratingResult, setIsGeneratingResult] = useState<boolean>(false);
+    const [resultGenerated, setResultGenerated] = useState<boolean>(false);
 
     const [siteTheme] = useAtom(themeAtom);
     useEffect(() => {
@@ -155,13 +161,18 @@ export default function Camera() {
         }
     };
 
-    const generateResult = () => {
-        // setCurrentIndex(0);
-        // setUserResponses([]);
-        // setQuestionText("");
-        // setInterimTranscript("");
+    const generateResult = async () => {
+        setIsGeneratingResult(true);
+        const response = await axios.post("/api/check_answers", { data : userResponses });
+        setFetchedResult(response.data.message);
+        setIsGeneratingResult(false);
+        setResultGenerated(true);
         console.log(userResponses);
     };
+
+    const viewResult = () => {
+        router.push("/result");
+    }
 
     return (
         <div>
@@ -179,7 +190,7 @@ export default function Camera() {
                         <p className="text-2xl text-center py-2 ">
                             <strong>Progress:</strong> {currentIndex}/{questions.length}
                         </p>
-                        <div className="w-full bg-gray-200 rounded-lg h-1 md:h-3 overflow-hidden">
+                        <div className="w-full bg-gray-900/30 dark:bg-gray-100/20 rounded-lg h-1 md:h-3 overflow-hidden">
                             <div
                                 className="bg-green-500 h-full rounded-lg"
                                 style={{ width: `${(currentIndex / questions.length) * 100}%` }}
@@ -190,7 +201,7 @@ export default function Camera() {
                     {currentIndex < questions.length ? (
                         <>
                             <div className="mb-6 text-center">
-                                <div className="text-gray-100 text-2xl transition-height duration-1000 min-h-20">
+                                <div className="text-gray-100 text-2xl transition-height duration-1000 min-h-56 md:min-h-20">
                                     <TypingAnimation
                                         className="text-4xl font-bold text-white dark:text-white"
                                         text={questionText || "Your Question will appear here!"}
@@ -210,18 +221,23 @@ export default function Camera() {
                         </>
                     ) : (
                         <div className="mt-6 text-center">
-                            <div className="text-gray-100 text-2xl transition-height duration-1000 min-h-20">
+                            <div className="text-gray-100 text-2xl transition-height duration-1000 min-h-56 md:min-h-20">
                                 <TypingAnimation
-                                    className="text-4xl font-bold text-black dark:text-white"
+                                    className="text-4xl font-bold text-white dark:text-white"
                                     text={"🎊Quiz Completed🎊"}
                                     duration={40}
                                 />
                             </div>
                             <button
-                                onClick={generateResult}
+                                onClick={resultGenerated ? viewResult : generateResult}
                                 className="text-xl px-8 py-3 mt-4 bg-yellow-500 hover:bg-yellow-600 rounded-full shadow-lg transition duration-300"
+                                disabled={isGeneratingResult}
                             >
-                                Generate Result
+                                {resultGenerated ? "View Result" : (
+                                    <span>{isGeneratingResult ? (
+                                        <Image src={smallLoader} alt="microphone" width={80} height={80} />
+                                    ) : "Generate Result"}</span>
+                                )}
                             </button>
                         </div>
                     )}

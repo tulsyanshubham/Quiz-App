@@ -13,7 +13,7 @@ export default function Header() {
     };
 
     return (
-        <header className="w-full bg-gray-200 dark:bg-gray-900 shadow-md">
+        <header className="w-full bg-gray-50 dark:bg-gray-950 shadow-md">
             <nav className="container mx-auto p-4 flex justify-between items-center">
                 <Link href='/' className="text-2xl font-bold text-gray-800 dark:text-gray-200">Quiz App</Link>
                 <button className={`p-1 dark:hover:bg-gray-700/70 hover:bg-gray-300 rounded-xl`} onClick={toggleTheme}>

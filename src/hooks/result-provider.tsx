@@ -1,10 +1,10 @@
 import { atom } from 'jotai';
 
-interface FormData {
+export interface ResultData {
     question: string;
     answer_by_user: string;
     explanation: string;
     score: number;
 }
 
-export const formDataAtom = atom<FormData[]>([]);
+export const resultDataAtom = atom<ResultData[]>([]);
