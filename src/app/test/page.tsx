@@ -162,6 +162,7 @@ export default function Camera() {
     };
 
     const generateResult = async () => {
+        setIsGeneratingResult(true);
         const response = await axios.post("/api/check_answers", { data : userResponses });
         setFetchedResult(response.data.message);
         setIsGeneratingResult(false);
