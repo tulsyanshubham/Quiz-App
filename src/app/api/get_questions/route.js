@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // Access your API key as an environment variable.
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-export async function POST(req: Request): Promise<Response> {
+export async function POST(req) {
     try {
         const { number_of_questions, topics, domain, difficulty } = await req.json();
         // console.log(number_of_questions, topics); /debug

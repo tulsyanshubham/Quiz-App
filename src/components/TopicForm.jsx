@@ -5,20 +5,20 @@ import { useFormData } from '@/context/formData-provider';
 
 export default function TopicForm() {
     const { formData, setFormData } = useFormData();
-    const [options, setOptions] = useState<string[]>([]);
-    const [selectedOption, setSelectedOption] = useState<string[]>([]);
+    const [options, setOptions] = useState([]);
+    const [selectedOption, setSelectedOption] = useState([]);
 
     useEffect(() => {
         setOptions(selectForm.find((data) => data.domain === formData.domain)?.topics || []);
     }, [formData.domain]);
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         console.log(formData);
         setFormData({ domain: formData.domain, topics: selectedOption });
     }
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event) => {
         if (event.target.checked) {
             setSelectedOption([...selectedOption, event.target.value]);
         } else {

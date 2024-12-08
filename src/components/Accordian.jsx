@@ -1,13 +1,6 @@
-import { ResultData } from "@/hooks/result-provider";
 import { Accordion, AccordionItem } from "@nextui-org/react";
 
-interface AccordionViewerProps {
-    data: ResultData[];
-    ref?: React.Ref<HTMLDivElement>;
-}
-
-export default function AccordionViewer({ data }: AccordionViewerProps) {
-
+export default function AccordionViewer({ data }) {
     const itemClasses = {
         base: "py-0 w-full bg-gray-900/10 p-3 rounded-lg",
         subtitle: "text-white font-semibold text-lg",

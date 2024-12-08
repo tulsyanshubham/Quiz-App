@@ -27,6 +27,7 @@ export default function ResultPage() {
         if(results.length === 0){
             router.push('/');
         }
+        console.log(results)
     }, [])
 
 

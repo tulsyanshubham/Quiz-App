@@ -1,9 +1,4 @@
-interface FormDataType {
-    domain: string;
-    topics: string[];
-}
-
-export const selectForm: FormDataType[] = [
+export const selectForm = [
     {
         domain: "Web Development",
         topics: [

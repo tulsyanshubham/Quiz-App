@@ -1,4 +1,4 @@
 import { atom } from 'jotai';
 
-const defaultTheme : string = "light";
+const defaultTheme = "light";
 export const themeAtom = atom(defaultTheme);

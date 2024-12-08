@@ -9,10 +9,10 @@ import Frame from '@/components/Frame';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Page() {
-    const [options, setOptions] = useState<string[]>([]);
-    const [selectedOption, setSelectedOption] = useState<string>("");
+    const [options, setOptions] = useState([]);
+    const [selectedOption, setSelectedOption] = useState("");
     const [formData, setFormData] = useAtom(formDataAtom);
-    const [level, setLevel] = useState<string>("");
+    const [level, setLevel] = useState("");
     const router = useRouter();
     const { toast } = useToast()
 
@@ -34,11 +34,11 @@ export default function Page() {
         }
     }, [siteTheme]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event) => {
         setSelectedOption(event.target.value);
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         if (selectedOption === "") {
             toast({
@@ -51,7 +51,7 @@ export default function Page() {
         router.push('/choosetopic');
     }
 
-    const handleDifficultyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleDifficultyChange = (event) => {
         setLevel(event.target.value);
     }
 

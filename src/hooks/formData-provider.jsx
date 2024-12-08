@@ -1,13 +1,6 @@
 import { atom } from 'jotai';
 
-interface FormData {
-    domain: string;
-    topics: string[];
-    number_of_questions: number;
-    difficulty?: string;
-}
-
-const defaultData : FormData = {
+const defaultData = {
     domain: "",
     topics: [],
     number_of_questions: 5,

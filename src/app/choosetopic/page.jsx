@@ -10,9 +10,9 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function TopicForm() {
     const [formData, setFormData] = useAtom(formDataAtom);
-    const [options, setOptions] = useState<string[]>([]);
-    const [selectedOption, setSelectedOption] = useState<string[]>([]);
-    const [numberOfQuestions, setNumberOfQuestions] = useState<number>(formData.number_of_questions);
+    const [options, setOptions] = useState([]);
+    const [selectedOption, setSelectedOption] = useState([]);
+    const [numberOfQuestions, setNumberOfQuestions] = useState(formData.number_of_questions);
     const router = useRouter();
     const { toast } = useToast()
 
@@ -37,7 +37,7 @@ export default function TopicForm() {
         }
     }, [siteTheme]);
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         if (selectedOption.length === 0) {
             toast({
@@ -51,7 +51,7 @@ export default function TopicForm() {
         router.push('/test');
     }
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event) => {
         if (event.target.checked) {
             setSelectedOption([...selectedOption, event.target.value]);
         } else {

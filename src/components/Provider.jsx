@@ -1,9 +1,7 @@
 'use client'
 import { Provider } from 'jotai'
 
-import { ReactNode } from 'react';
-
-export const Providers = ({ children }: { children: ReactNode }) => {
+export const Providers = ({ children }) => {
   return (
     <Provider>
       {children}

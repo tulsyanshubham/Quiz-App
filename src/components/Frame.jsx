@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import Header from './Header';
 
-export default function Frame({ children, className = "" }: { children: ReactNode; className?: string }) {
+export default function Frame({ children, className = "" }) {
     return (
         <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 dark:from-gray-700 dark:to-gray-900">
             <Header />

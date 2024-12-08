@@ -1,20 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-interface QAData {
-    question: string;
-    answer_by_user: string;
-}
-
-interface EvaluatedResponse {
-    question: string;
-    answer_by_user: string;
-    explanation: string;
-    score: number;
-}
-
-export async function POST(req: Request): Promise<Response> {
+export async function POST(req) {
     try {
-        const { data }: { data: QAData[] } = await req.json();
+        const { data } = await req.json();
 
         const questionsAndAnswers = data.map(item => `{
             "question": "${item.question}",
@@ -32,11 +20,11 @@ export async function POST(req: Request): Promise<Response> {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent(prompt);
-        const msg = result.response.candidates?.[0]?.content.parts?.[0]?.text ?? "";
+        const msg = result.response.candidates?.[0]?.content.parts?.[0]?.text || "";
 
         const responseArray = msg.split("||").map(item => item.trim());
 
-        const evaluatedData: EvaluatedResponse[] = responseArray.map((item, index) => {
+        const evaluatedData = responseArray.map((item, index) => {
             const [correctAnswer, score] = item.split("~~").map(part => part.trim());
             return {
                 question: data[index].question,

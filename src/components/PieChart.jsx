@@ -25,9 +25,9 @@ const chartConfig = {
         label: "Safari",
         color: "hsl(var(--chart-2))",
     },
-} satisfies ChartConfig
+}
 
-export default function PieChartViewer({ correct, heading }: Readonly<{ correct: number,heading: string }>) {
+export default function PieChartViewer({ correct, heading }) {
     const chartData = [
         { browser: "Correct", visitors: correct, fill: "var(--color-safari)" },
         { browser: "Wrong", visitors: 100 - correct, fill: "var(--color-chrome)" },

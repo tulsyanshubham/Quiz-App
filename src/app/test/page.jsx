@@ -13,52 +13,24 @@ import { TypingAnimation } from "@/components/ui/type-animation";
 import { themeAtom } from "@/hooks/theme-provider";
 import { resultDataAtom } from "@/hooks/result-provider";
 import Image from "next/image";
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-
-// Declare custom types for SpeechRecognition
-declare global {
-    interface Window {
-        webkitSpeechRecognition: typeof SpeechRecognition;
-    }
-    interface SpeechRecognitionEvent extends Event {
-        resultIndex: number;
-        results: {
-            [key: number]: SpeechRecognitionResult;
-        };
-    }
-    interface SpeechRecognitionResult {
-        isFinal: boolean;
-        [key: number]: SpeechRecognitionAlternative;
-    }
-    interface SpeechRecognitionAlternative {
-        transcript: string;
-        confidence: number;
-    }
-}
-
-interface SavedResponse {
-    question: string;
-    answer_by_user: string;
-}
 
 export default function Camera() {
-    const [currentIndex, setCurrentIndex] = useState<number>(0);
-    const [userResponses, setUserResponses] = useState<SavedResponse[]>([]);
-    const [isRecording, setIsRecording] = useState<boolean>(false);
-    const [isSpeaking, setIsSpeaking] = useState<boolean>(false); // New state for speech status
-    const [speechRate] = useState<number>(0.8);
-    const recognitionRef = useRef<SpeechRecognition | null>(null);
-    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    const [interimTranscript, setInterimTranscript] = useState<string>("");
-    const [questionText, setQuestionText] = useState<string>("");
-    const [questions, setQuestions] = useState<string[]>([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [userResponses, setUserResponses] = useState([]);
+    const [isRecording, setIsRecording] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false); // New state for speech status
+    const [speechRate] = useState(0.8);
+    const recognitionRef = useRef(null);
+    const mediaRecorderRef = useRef(null);
+    const [interimTranscript, setInterimTranscript] = useState("");
+    const [questionText, setQuestionText] = useState("");
+    const [questions, setQuestions] = useState([]);
     const [formData] = useAtom(formDataAtom);
     const router = useRouter();
-    const [loading, setLoading] = useState<boolean>(true);
-    const [, setFetchedResult] = useAtom(resultDataAtom);
-    const [isGeneratingResult, setIsGeneratingResult] = useState<boolean>(false);
-    const [resultGenerated, setResultGenerated] = useState<boolean>(false);
-    const { transcript, resetTranscript } = useSpeechRecognition();
+    const [loading, setLoading] = useState(true);
+    const [fetchedResult, setFetchedResult] = useAtom(resultDataAtom);
+    const [isGeneratingResult, setIsGeneratingResult] = useState(false);
+    const [resultGenerated, setResultGenerated] = useState(false);
 
     const [siteTheme] = useAtom(themeAtom);
     useEffect(() => {
@@ -76,10 +48,17 @@ export default function Camera() {
         async function fetchQuestions() {
             const response = await axios.post("/api/get_questions", { ...formData });
             setQuestions(response.data.questions);
+            // setQuestions([
+            //     "What are the different ways to style HTML elements using CSS, and what are the advantages and disadvantages of each method?",
+            //     "Explain the difference between `==` and `===` in JavaScript",
+            //     "Describe the box model in CSS and how it affects element layout",
+            //     "What are semantic HTML5 elements and why are they important?",
+            //     "Explain the concept of closures in JavaScript and provide a simple example",
+            // ]);
             setLoading(false);
         }
         fetchQuestions();
-    }, [formData, router]);
+    }, []);
 
     const handleSpeakAndRecord = async () => {
         if (currentIndex >= questions.length) {
@@ -109,8 +88,8 @@ export default function Camera() {
                         recognition.interimResults = true;
                         recognition.lang = "en-US";
 
-                        recognition.onresult = (event: SpeechRecognitionEvent) => {
-                            const transcriptText = Array.from(event.results)
+                        recognition.onresult = (event) => {
+                            const transcriptText = Array.from(Object.values(event.results))
                                 .map((result) => result[0].transcript)
                                 .join(" ");
                             setInterimTranscript(transcriptText);
@@ -149,7 +128,7 @@ export default function Camera() {
             stream.getTracks().forEach((track) => track.stop());
 
             // Save the user's response
-            const answer = (transcript || "").trim();
+            const answer = interimTranscript.trim();
             const currentQuestion = questions[currentIndex];
 
             setUserResponses((prevResponses) => [
@@ -158,27 +137,24 @@ export default function Camera() {
             ]);
 
             // Reset interim transcript and prepare for the next question
-            resetTranscript();
+            setInterimTranscript("");
             setCurrentIndex((prevIndex) => prevIndex + 1);
             setQuestionText("");
         }
     };
 
-    async function fetchResult() {
-        const response = await axios.post("/api/check_answers", { data: userResponses });
-        console.log(response.data.message);
-        setFetchedResult(response.data.message);
-    }
-
-    const generateResult = () => {
+    const generateResult = async () => {
         setIsGeneratingResult(true);
-        fetchResult();
-        setResultGenerated(true);
+        const response = await axios.post("/api/check_answers", { data : userResponses });
+        setFetchedResult(response.data.message);
         setIsGeneratingResult(false);
-        console.log(fetchResult);
+        setResultGenerated(true);
+        console.log(userResponses);
+        console.log(fetchedResult);
     };
-
+    
     const viewResult = () => {
+        setIsGeneratingResult(true);
         router.push("/result");
     }
 
@@ -238,19 +214,13 @@ export default function Camera() {
                             </div>
                             <button
                                 onClick={resultGenerated ? viewResult : generateResult}
-                                className="text-xl px-8 py-3 mt-4 bg-yellow-500 disabled:bg-yellow-600 hover:bg-yellow-600 rounded-full shadow-lg transition duration-300"
+                                className="text-xl px-8 py-3 mt-4 bg-yellow-500 hover:bg-yellow-600 rounded-full shadow-lg transition duration-300"
                                 disabled={isGeneratingResult}
                             >
-                                {resultGenerated ? (
-                                    "View Result"
-                                ) : (
-                                    isGeneratingResult ? (
-                                        <div className="flex justify-center items-center">
-                                            <Image src={smallLoader} alt="Loading..." width={30} height={30} />
-                                        </div>
-                                    ) : (
-                                        "Generate Result"
-                                    )
+                                {resultGenerated ? "View Result" : (
+                                    <span>{isGeneratingResult ? (
+                                        <Image src={smallLoader} alt="microphone" width={80} height={80} />
+                                    ) : "Generate Result"}</span>
                                 )}
                             </button>
                         </div>

@@ -4,18 +4,12 @@ import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
-interface TypingAnimationProps {
-  text: string;
-  duration?: number;
-  className?: string;
-}
-
 export function TypingAnimation({
   text,
   duration = 200,
   className,
-}: TypingAnimationProps) {
-  const [displayedText, setDisplayedText] = useState<string>("");
+}) {
+  const [displayedText, setDisplayedText] = useState("");
 
   useEffect(() => {
     // Reset the state when text changes
