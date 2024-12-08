@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { GoMoon } from 'react-icons/go';
 import { IoSunnyOutline } from 'react-icons/io5';
 import { useAtom } from 'jotai';

@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useAtom } from 'jotai';
 import { formDataAtom } from '@/hooks/formData-provider';
 import { themeAtom } from '@/hooks/theme-provider';
-import Header from '@/components/Header';
 import Frame from '@/components/Frame';
 import { useToast } from '@/hooks/use-toast';
 
@@ -47,7 +46,8 @@ export default function TopicForm() {
             });
             return;
         }        
-        setFormData({ domain: formData.domain, topics: selectedOption, number_of_questions: numberOfQuestions });
+        setFormData({ domain: formData.domain, difficulty: formData.difficulty ,topics: selectedOption, number_of_questions: numberOfQuestions });
+        console.log(formData)
         router.push('/test');
     }
 

@@ -1,10 +1,9 @@
 "use client";
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { selectForm } from '@/assets/formData';
 import { useRouter } from 'next/navigation';
 import { useAtom } from 'jotai';
 import { formDataAtom } from '@/hooks/formData-provider';
-import Header from '@/components/Header';
 import { themeAtom } from '@/hooks/theme-provider';
 import Frame from '@/components/Frame';
 import { useToast } from '@/hooks/use-toast';
@@ -21,12 +20,8 @@ export default function Page() {
 
     useEffect(() => {
         setOptions(selectForm.map((data) => data.domain));
-        if (formData.domain !== "") {
-            setSelectedOption(formData.domain);
-        }
-        if (formData.difficulty !== "") {
-            setLevel(formData.difficulty || "easy");
-        }
+        setSelectedOption(formData.domain || formData.domain);
+        setLevel(formData.difficulty || "easy");
     }, []);
 
     useEffect(() => {
@@ -53,7 +48,6 @@ export default function Page() {
             return;
         }
         setFormData({ domain: selectedOption, difficulty: level, topics: formData.topics, number_of_questions: formData.number_of_questions });
-        console.log(formData)
         router.push('/choosetopic');
     }
 

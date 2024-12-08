@@ -1,13 +1,12 @@
 "use client";
-import React, { Fragment, useEffect, useRef } from 'react';
-import Header from '@/components/Header';
+import React, { useEffect } from 'react';
 import PieChartViewer from '@/components/PieChart';
 import { useAtom } from 'jotai';
 import { themeAtom } from '@/hooks/theme-provider';
 import AccordionViewer from '@/components/Accordian';
 import Frame from '@/components/Frame';
-import { revealOptions } from "@/constants/scrollRevealOptions";
 import { resultDataAtom } from '@/hooks/result-provider';
+import { useRouter } from 'next/navigation';
 
 export default function ResultPage() {
 
@@ -21,23 +20,15 @@ export default function ResultPage() {
             document.body.classList.remove(siteTheme);
         }
     }, [siteTheme]);
-
-    const fromTop = useRef(null)
-    const fromBottom = useRef(null)
+    
+    const [results] = useAtom(resultDataAtom);
+    const router = useRouter();
     useEffect(() => {
-        async function animate() {
-            const sr = (await import("scrollreveal")).default
-            if (fromTop.current) {
-                sr(revealOptions).reveal(fromTop.current, { origin: 'top' })
-            }
-            if (fromBottom.current) {
-                sr(revealOptions).reveal(fromBottom.current, { origin: 'bottom' })
-            }
+        if(results.length === 0){
+            router.push('/');
         }
-        animate()
     }, [])
 
-    const [results] = useAtom(resultDataAtom);
 
     const totalScore = results.reduce((acc, result) => acc + result.score, 0);
     const percentageScore = (totalScore / (results.length));
@@ -45,7 +36,7 @@ export default function ResultPage() {
     return (
         <Frame className="justify-start">
             <PieChartViewer correct={percentageScore} heading={"Quiz Result"} />
-            <AccordionViewer data={results} ref={fromBottom} />
+            <AccordionViewer data={results} />
         </Frame>
     );
 }

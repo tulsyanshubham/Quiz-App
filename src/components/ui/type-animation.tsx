@@ -16,12 +16,10 @@ export function TypingAnimation({
   className,
 }: TypingAnimationProps) {
   const [displayedText, setDisplayedText] = useState<string>("");
-  const [i, setI] = useState<number>(0);
 
   useEffect(() => {
     // Reset the state when text changes
     setDisplayedText("");
-    setI(0);
 
     const typingEffect = setInterval(() => {
       setDisplayedText((prev) => {

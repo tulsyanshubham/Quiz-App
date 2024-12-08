@@ -6,7 +6,7 @@ interface AccordionViewerProps {
     ref?: React.Ref<HTMLDivElement>;
 }
 
-export default function AccordionViewer({ data,ref }: AccordionViewerProps) {
+export default function AccordionViewer({ data }: AccordionViewerProps) {
 
     const itemClasses = {
         base: "py-0 w-full bg-gray-900/10 p-3 rounded-lg",
@@ -17,7 +17,7 @@ export default function AccordionViewer({ data,ref }: AccordionViewerProps) {
     };
 
     return (
-        <div className="w-full max-w-5xl px-5" ref={ref}>
+        <div className="w-full max-w-5xl px-5">
             <Accordion
                 selectionMode="multiple"
                 itemClasses={itemClasses}

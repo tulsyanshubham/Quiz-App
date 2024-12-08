@@ -13,11 +13,12 @@ import { TypingAnimation } from "@/components/ui/type-animation";
 import { themeAtom } from "@/hooks/theme-provider";
 import { resultDataAtom } from "@/hooks/result-provider";
 import Image from "next/image";
+import SpeechRecognition from 'react-speech-recognition'
 
 // Declare custom types for SpeechRecognition
 declare global {
     interface Window {
-        webkitSpeechRecognition: any;
+        webkitSpeechRecognition: typeof SpeechRecognition;
     }
     interface SpeechRecognitionEvent extends Event {
         resultIndex: number;
@@ -38,7 +39,7 @@ export default function Camera() {
     const [isRecording, setIsRecording] = useState<boolean>(false);
     const [isSpeaking, setIsSpeaking] = useState<boolean>(false); // New state for speech status
     const [speechRate] = useState<number>(0.8);
-    const recognitionRef = useRef<any>(null);
+    const recognitionRef = useRef<SpeechRecognition | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const [interimTranscript, setInterimTranscript] = useState<string>("");
     const [questionText, setQuestionText] = useState<string>("");
@@ -46,7 +47,7 @@ export default function Camera() {
     const [formData] = useAtom(formDataAtom);
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
-    const [fetchedResult, setFetchedResult] = useAtom(resultDataAtom);
+    const [, setFetchedResult] = useAtom(resultDataAtom);
     const [isGeneratingResult, setIsGeneratingResult] = useState<boolean>(false);
     const [resultGenerated, setResultGenerated] = useState<boolean>(false);
 
@@ -161,17 +162,21 @@ export default function Camera() {
         }
     };
 
-    const generateResult = async () => {
-        setIsGeneratingResult(true);
-        const response = await axios.post("/api/check_answers", { data : userResponses });
+    async function fetchResult() {
+        const response = await axios.post("/api/check_answers", { data: userResponses });
+        console.log(response.data.message);
         setFetchedResult(response.data.message);
-        setIsGeneratingResult(false);
-        setResultGenerated(true);
-        console.log(userResponses);
-    };
-    
-    const viewResult = () => {
+    }
+
+    const generateResult = () => {
         setIsGeneratingResult(true);
+        fetchResult();
+        setResultGenerated(true);
+        setIsGeneratingResult(false);
+        console.log(fetchResult);
+    };
+
+    const viewResult = () => {
         router.push("/result");
     }
 
@@ -231,13 +236,19 @@ export default function Camera() {
                             </div>
                             <button
                                 onClick={resultGenerated ? viewResult : generateResult}
-                                className="text-xl px-8 py-3 mt-4 bg-yellow-500 hover:bg-yellow-600 rounded-full shadow-lg transition duration-300"
+                                className="text-xl px-8 py-3 mt-4 bg-yellow-500 disabled:bg-yellow-600 hover:bg-yellow-600 rounded-full shadow-lg transition duration-300"
                                 disabled={isGeneratingResult}
                             >
-                                {resultGenerated ? "View Result" : (
-                                    <span>{isGeneratingResult ? (
-                                        <Image src={smallLoader} alt="microphone" width={80} height={80} />
-                                    ) : "Generate Result"}</span>
+                                {resultGenerated ? (
+                                    "View Result"
+                                ) : (
+                                    isGeneratingResult ? (
+                                        <div className="flex justify-center items-center">
+                                            <Image src={smallLoader} alt="Loading..." width={30} height={30} />
+                                        </div>
+                                    ) : (
+                                        "Generate Result"
+                                    )
                                 )}
                             </button>
                         </div>
