@@ -13,6 +13,7 @@ export default function Page() {
     const [options, setOptions] = useState<string[]>([]);
     const [selectedOption, setSelectedOption] = useState<string>("");
     const [formData, setFormData] = useAtom(formDataAtom);
+    const [level, setLevel] = useState<string>("");
     const router = useRouter();
     const { toast } = useToast()
 
@@ -22,6 +23,9 @@ export default function Page() {
         setOptions(selectForm.map((data) => data.domain));
         if (formData.domain !== "") {
             setSelectedOption(formData.domain);
+        }
+        if (formData.difficulty !== "") {
+            setLevel(formData.difficulty || "easy");
         }
     }, []);
 
@@ -48,8 +52,13 @@ export default function Page() {
             });
             return;
         }
-        setFormData({ domain: selectedOption, topics: [], number_of_questions: formData.number_of_questions });
+        setFormData({ domain: selectedOption, difficulty: level, topics: formData.topics, number_of_questions: formData.number_of_questions });
+        console.log(formData)
         router.push('/choosetopic');
+    }
+
+    const handleDifficultyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setLevel(event.target.value);
     }
 
     return (
@@ -71,6 +80,18 @@ export default function Page() {
                                     {option}
                                 </label>
                             ))}
+                        </div>
+                        <div className="text-2xl flex flex-wrap justify-center gap-7 items-center">
+                            <label>Difficulty: </label>
+                            <select
+                                value={level}
+                                onChange={handleDifficultyChange}
+                                className="bg-gray-800/30 dark:bg-gray-900/30 rounded-lg py-1 px-5">
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                                <option value="hell">Hell</option>
+                            </select>
                         </div>
                         <button
                             type="submit"
