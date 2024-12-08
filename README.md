@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Quiz App
 
-## Getting Started
+The **Quiz App** is an interactive web application built using **Next.js** and the **Gemini API**. It allows users to customize their quiz experience by selecting a domain, difficulty level, and topics. Questions are dynamically generated, presented in text and audio formats, and answered through audio. The app leverages advanced technologies for scoring and providing detailed explanations.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Customizable Quizzes**: Users can select the domain, difficulty level, topics, and number of questions.
+- **Audio Interaction**: 
+  - Questions are presented in both text and audio formats.
+  - Users respond to questions using audio, which is converted to text using speech recognition.
+- **Dynamic Question Generation**: The Gemini API generates a set of questions based on user preferences.
+- **Automated Evaluation**:
+  - User responses are scored using the Gemini API.
+  - Provides detailed explanations of the scoring criteria.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Frontend**: [Next.js](https://nextjs.org/)
+- **API Integration**: [Gemini API](https://gemini.openai.com/)
+- **Speech Recognition**: Browser-based audio-to-text conversion.
