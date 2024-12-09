@@ -8,11 +8,11 @@ import { formDataAtom } from "@/hooks/formData-provider";
 import Frame from "@/components/Frame";
 import Lottie from "lottie-react";
 import loader from "@/assets/white loader.json";
-import smallLoader from "@/assets/loader.gif";
 import { TypingAnimation } from "@/components/ui/type-animation";
 import { themeAtom } from "@/hooks/theme-provider";
 import { resultDataAtom } from "@/hooks/result-provider";
-import Image from "next/image";
+// import smallLoader from "@/assets/loader.gif";
+// import Image from "next/image";
 
 export default function Camera() {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -154,7 +154,6 @@ export default function Camera() {
     };
     
     const viewResult = () => {
-        setIsGeneratingResult(true);
         router.push("/result");
     }
 
@@ -219,7 +218,8 @@ export default function Camera() {
                             >
                                 {resultGenerated ? "View Result" : (
                                     <span>{isGeneratingResult ? (
-                                        <Image src={smallLoader} alt="microphone" width={80} height={80} />
+                                        // <Image src={smallLoader} alt="microphone" width={80} height={80} />
+                                        "Generating..."
                                     ) : "Generate Result"}</span>
                                 )}
                             </button>
