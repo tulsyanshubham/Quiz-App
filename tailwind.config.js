@@ -1,4 +1,5 @@
 import {nextui} from '@nextui-org/theme';
+import tailwindcssAnimate from "tailwindcss-animate";
 
 const config = {
     darkMode: ["class"],
@@ -59,6 +60,6 @@ const config = {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate"),nextui()],
+  plugins: [tailwindcssAnimate,nextui()],
 };
 export default config;
